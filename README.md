@@ -6,26 +6,34 @@ A hands-on AWS cloud engineering lab built from scratch using the AWS free tier.
 
 ## Architecture Overview
 
-```
-                        Internet
-                           │
-              ┌────────────┴────────────┐
-              │                         │
-   Application Load Balancer      API Gateway
-   (my-lab-alb)                   (my-lab-api)
-              │                         │
-     ┌────────┴────────┐                │
-     │                 │                │
-  EC2 Server 1    EC2 Server 2      Lambda
-  (Apache)        (Apache)          (Python)
-     │                 │                │
-     └────────┬─────────┘               │
-              │                         │
-           S3 Bucket ◄──────────────────┘
-        (Static Website)
-              │
-     IAM + Security Groups + VPC
-     (Identity, Firewall, Networking)
+```mermaid
+graph TD
+    A[👤 User / Browser] --> B[⚖️ Application Load Balancer]
+    A --> C[🔀 API Gateway]
+    
+    B --> D[🖥️ EC2 Server 1\nApache - Port 80]
+    B --> E[🖥️ EC2 Server 2\nApache - Port 80]
+    
+    C --> F[⚡ Lambda Function\nPython 3.12]
+    
+    D --> G[🪣 S3 Bucket\nStatic Website]
+    E --> G
+    F --> G
+    
+    subgraph VPC [🌐 VPC — Private Network]
+        D
+        E
+        F
+        G
+    end
+    
+    subgraph Security [🔒 Security Layer]
+        H[IAM\nPermissions]
+        I[Security Groups\nFirewall]
+        J[CloudWatch\nMonitoring]
+    end
+    
+    Security --> VPC
 ```
 
 ---
